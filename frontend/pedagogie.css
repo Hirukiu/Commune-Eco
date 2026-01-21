@@ -1,3 +1,6 @@
+@media screen {
+    
+
 h1 {
     text-align: center;
     color: #3e5c42;
@@ -11,6 +14,8 @@ main {
     text-align: center;
     margin-top: 50px;
 }
+
+
 
 main ul {
     color: #333333;
@@ -73,4 +78,6 @@ main div h3 {
     padding-right: 30px;
     border-color: rgb(247, 104, 15);   
     border-left: 12px solid rgb(247, 104, 15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
 }
