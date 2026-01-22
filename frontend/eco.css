@@ -13,7 +13,8 @@ h1{
     padding-bottom: 50px;
 }
 .commune1{
-    height: 60px;
+    transition: .4s;
+    height: 50px;
     width: 400px;
     outline: none;
     border-radius: 15px;
@@ -22,8 +23,12 @@ h1{
     background: rgba(255, 255, 255, 0.767);
     box-shadow: 2px 3px 2px 3px rgba(0, 0, 0, 0.171);
 }
+.commune1:hover{
+    transform: scale(1.05);
+}
 .commune2{
-    height: 60px;
+    transition: .4s;
+    height: 50px;
     width: 400px;
     outline: none;
     border-radius: 15px;
@@ -31,6 +36,9 @@ h1{
     border: none;
     background: rgba(255, 255, 255, 0.767);
     box-shadow: 2px 3px 2px 3px rgba(0, 0, 0, 0.247);
+}
+.commune2:hover{
+    transform: scale(1.05);
 }
 .result{
     display: flex;
@@ -42,6 +50,7 @@ h1{
     background-color: rgba(255, 255, 255, 0.452);
     border-radius: 15px;
     box-shadow: 2px 3px 2px 3px rgba(0, 0, 0, 0.247);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 .zone2{
     width: 400px;
@@ -49,4 +58,5 @@ h1{
     background-color: rgba(255, 255, 255, 0.452);
     border-radius: 15px;
     box-shadow: 2px 3px 2px 3px rgba(0, 0, 0, 0.171);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
