@@ -1,13 +1,12 @@
 //import {getEnergyConsumption,getWaterScore,getConsoElec,getINSEE,calScore, getAllInfo} from './function.js';
 async function getEnergyConsumption(INSEE){
-	const res = await fetch(`https://data.ademe.fr/data-fair/api/v1/datasets/dpe-france/metric_agg?q=${INSEE}&q_fields=code_insee_commune_actualise&field=consommation_energie&metric=avg`);
+	const res = await fetch(`https://data.ademe.fr/data-fair/api/v1/datasets/dpe-france/metric_agg?q=33063&q_fields=code_insee_commune_actualise&field=consommation_energie&metric=avg`)
 	if (!res.ok) {
 		console.warn(`Erreur API ADEME (${res.status})`);
-        console.log(res)
 		return null;
 	}
 	const data = await res.json();
-	return(data.value);
+	return(Math.round(data.metric * 10) / 10);
 }
 
 async function getWaterScore(INSEE){
@@ -18,7 +17,6 @@ async function getWaterScore(INSEE){
 
 	if (!resBac1.ok || !resBac2.ok || !resTot.ok) {
 			console.warn(`Erreur API ADEME`);
-            console.log(resBac1)
 			return null;
 		}
 
@@ -50,7 +48,6 @@ async function getConsoElec(INSEE){
     
 	if (!res.ok) {
 		console.warn(`Erreur API ADEME (${res.status})`);
-        console.log(res)
 		return null;
 	}
 	let i = 0;
@@ -58,7 +55,6 @@ async function getConsoElec(INSEE){
 	let gaz = 0;
 	const data = await res.json();
 	const result = data.results;
-    console.log(data)
 
 	if (!result || result.length === 0) {
 		console.warn(`Pas de données ${INSEE}`);
@@ -84,9 +80,9 @@ async function getConsoElec(INSEE){
 
 	const ratio = gaz / usage;
 	
-	usage = (usage * 0.059)/population;
+	usage = (usage * 59)/population;
 	return {
-		production_polution : usage,
+		production_polution : Math.round(usage * 10) / 10,
 		utilisation_gaz : gaz,
 		taux_gaz : ratio
 	}
@@ -107,7 +103,6 @@ async function getINSEE(commune){
 	}
 
 	const first = data[0];
-    console.log(first.code)
 	return {
 		name: first.nom,
 		INSEE: first.code,
@@ -116,12 +111,15 @@ async function getINSEE(commune){
 }
 
 function calScore(pollution, water, energy) {
+
+	
 	const p = pollution ? pollution.production_polution : 0;
 	const w = water ? water.score : 0;
 	const e = energy || 0;
-
+	
 	const score = p * w * e;
-	return score;
+	
+	return Math.round(score * 10) / 10;
 }
 
 async function getAllInfo(commune)
@@ -140,11 +138,10 @@ async function getAllInfo(commune)
 		return null;
 	}
 
-	const polution = getConsoElec(INSEE);
-	const water = getWaterScore(INSEE);
-	const energy =  getEnergyConsumption(INSEE);
-console.log(energy)
-
+	const polution = await getConsoElec(INSEE);
+	const water = await getWaterScore(INSEE);
+	const energy =  await getEnergyConsumption(INSEE);
+	
     if (!polution) {
         console.warn("Donnée polution non trouvée par l'API");
         console.warn(polution)
@@ -182,12 +179,15 @@ console.log(energy)
 // };
 
 
-
-document.getElementById('btn1').addEventListener('click', () => {
+document.getElementById('btn1').addEventListener('click', async () => {
   const informations = document.getElementById('commune1').value;
-  const displayedData = getAllInfo(informations);
+  const displayedData = await getAllInfo(informations);
   const zone = document.getElementById('zone1');
-  zone.textContent = displayedData;
+  if (displayedData) {
+          zone.textContent = `Score final : ${displayedData.score_final} / Isolation : ${displayedData.moyenne_isolation}`;
+      } else {
+          zone.textContent = "Erreur : Commune introuvable ou données manquantes.";
+      }
 });
 
 
