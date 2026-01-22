@@ -63,7 +63,16 @@ async function getConsoElec(INSEE) {
     }
 
     const population = result[i].nombre_d_habitants;
-
+	while (i < result.length){
+		let tmp = result[i].conso_totale_mwh || 0;
+		
+		if (result[i].filiere != "Electricité") {
+		tmp = tmp * 4; 
+		gaz = gaz + result[i].conso_totale_mwh;
+	}
+usage = usage + tmp;
+i++;
+}
 	const ratio = gaz / usage;
 	
 	usage = (usage * 59)/population;
@@ -148,7 +157,7 @@ async function getAllInfo(commune) {
     return {
         ville: ville,
         moyenne_isolation: energy,
-        water_quality: water,
+        water: water,
         polution: polution,
         score_final: score_final
     }
@@ -174,9 +183,9 @@ document.getElementById('btn1').addEventListener('click', async () => {
     zone.textContent = displayedData.water.total_tests;
     zone.textContent = displayedData.water.total_incidents;
     zone.textContent = displayedData.water.score;
-    zone.textContent = displayedData.pollution.production_polution;
-    zone.textContent = displayedData.pollution.utilisation_gaz;
-    zone.textContent = displayedData.pollution.taux_gaz;
+    zone.textContent = displayedData.polution.production_polution;
+    zone.textContent = displayedData.polution.utilisation_gaz;
+    zone.textContent = displayedData.polution.taux_gaz;
     zone.textContent = displayedData.score_final;
 });
 
