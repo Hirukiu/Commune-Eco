@@ -106,4 +106,33 @@ async function calScore(INSEE){
 	const water = getWaterScore(INSEE);
 	const energy = getEnergyConsumption(INSEE);
 
+	const score = polution.production_polution * water.score * energy
+	return score;
+}
+
+async function getAllInfo(commune)
+{
+	const INSEE = getINSEE(commune);
+
+	if(!INSEE){
+		console.warn(`commune non trouvée`);
+		return null;
+	}
+
+	const polution = getConsoElec(INSEE);
+	const water = getWaterScore(INSEE);
+	const energy = getEnergyConsumption(INSEE);
+
+	if(!polutions || !water || !energy){
+		console.warn(`Commune non trouvée par une API`)
+	}
+
+	const calScore(INSEE);
+
+	return {
+		population: 1,
+		moyenne_isolation: energy,
+		water_quality:water,
+		polution: polution
+	}
 }
