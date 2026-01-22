@@ -74,8 +74,10 @@ async function getConsoElec(INSEE) {
         i++;
     }
     const ratio = gaz / usage;
-
-    usage = (usage * 59) / population;
+    if (population)
+        usage = (usage * 59) / population;
+    else
+        usage = (usage * 59) ** (1/4)
     return {
         production_polution: Math.round(usage * 10) / 10,
         utilisation_gaz: gaz,
@@ -109,10 +111,10 @@ function calScore(pollution, water, energy) {
 
 
     const p = pollution ? pollution.production_polution : 0;
-    const w = water ? water.score : 0;
+    const w = water ? water.score : 1;
     const e = energy || 0;
 
-    const score = p * w * e;
+    const score = (p * e) / w;
 
     return Math.round(score * 10) / 10;
 
@@ -177,25 +179,25 @@ async function getAllInfo(commune) {
 document.getElementById('btn1').addEventListener('click', async () => {
     const informations = document.getElementById('commune1').value;
     const displayedData = await getAllInfo(informations);
-    const zone = document.getElementById('zone1');
+    const zone1 = document.getElementById('zone1');
     const p1 = document.createElement('p');
-    p1.textContent = displayedData.ville.ville;
+    p1.textContent = "Ville : "+displayedData.ville.name;
     const p2 = document.createElement('p');
-    p2.textContent = displayedData.water.score;
+    p2.textContent = "Taux de test d'eau saine : "+(displayedData.water.score * 100)+"%";
     const p3 = document.createElement('p');
-    p3.textContent = displayedData.water.total_tests;
+    p3.texparistContent = "Nombre de test d'eau : "+displayedData.water.total_tests;
     const p4 = document.createElement('p');
-    p4.textContent = displayedData.water.total_incidents;
+    p4.textContent = "Nombre de test d'eau non saine : "+displayedData.water.total_incidents;
     const p5 = document.createElement('p');
-    p6.textContent = displayedData.polution.production_polution;
+    p5.textContent = "Co2 par habitant : "+displayedData.polution.production_polution+" T/an";
     const p6 = document.createElement('p');
-    p7.textContent = displayedData.polution.utilisation_gaz;
+    p6.textContent = "Utilisation de gaz : "+displayedData.polution.utilisation_gaz+" mwh";
     const p7 = document.createElement('p');
-    p8.textContent = displayedData.polution.taux_gaz;
+    p7.textContent = "Taux d'utilisation de gaz : "+(displayedData.polution.taux_gaz* 100)+"%";
     const p8 = document.createElement('p');
-    p9.textContent = displayedData.score_final;
-    zone.textContent = "";
-    zone.append(p1, p2, p3, p4, p5, p6, p7, p8);
+    p8.textContent = "Indice Ecologique final (moyenne 100): "+Math.round((displayedData.score_final / 1568.4) * 10000)/100;
+    zone1.textContent = "";
+    zone1.append(p1, p2, p3, p4, p5, p6, p7, p8);
 });
 
 document.getElementById('btn2').addEventListener('click', async () => {
@@ -203,21 +205,21 @@ document.getElementById('btn2').addEventListener('click', async () => {
     const displayedData = await getAllInfo(informations);
     const zone = document.getElementById('zone2');
     const p1 = document.createElement('p');
-    p1.textContent = displayedData.ville.ville;
+    p1.textContent = "Ville : "+displayedData.ville.name;
     const p2 = document.createElement('p');
-    p2.textContent = displayedData.water.score;
+    p2.textContent = "Taux de test d'eau saine : "+(displayedData.water.score * 100)+"%";
     const p3 = document.createElement('p');
-    p3.textContent = displayedData.water.total_tests;
+    p3.texparistContent = "Nombre de test d'eau : "+displayedData.water.total_tests;
     const p4 = document.createElement('p');
-    p4.textContent = displayedData.water.total_incidents;
+    p4.textContent = "Nombre de test d'eau non saine : "+displayedData.water.total_incidents;
     const p5 = document.createElement('p');
-    p6.textContent = displayedData.polution.production_polution;
+    p5.textContent = "Co2 par habitant : "+displayedData.polution.production_polution+" T/an";
     const p6 = document.createElement('p');
-    p7.textContent = displayedData.polution.utilisation_gaz;
+    p6.textContent = "Utilisation de gaz : "+displayedData.polution.utilisation_gaz+" mwh";
     const p7 = document.createElement('p');
-    p8.textContent = displayedData.polution.taux_gaz;
+    p7.textContent = "Taux d'utilisation de gaz : "+(displayedData.polution.taux_gaz* 100)+"%";
     const p8 = document.createElement('p');
-    p9.textContent = displayedData.score_final;
+    p8.textContent = "Potentiel polluant (moyenne 100): "+Math.round((displayedData.score_final / 1568.4) * 10000)/100;
     zone.textContent = "";
     zone.append(p1, p2, p3, p4, p5, p6, p7, p8);
 });

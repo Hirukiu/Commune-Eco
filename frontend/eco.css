@@ -58,19 +58,12 @@ h1{
     display: flex;
     justify-content: space-around;
 }
-.zone1{
+.zone{
     width: 400px;
     height: auto;
+    padding: 20px;
     background-color: rgba(255, 255, 255, 0.452);
     border-radius: 15px;
     box-shadow: 2px 3px 2px 3px rgba(0, 0, 0, 0.247);
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-}
-.zone2{
-    width: 400px;
-    height: auto;
-    background-color: rgba(255, 255, 255, 0.452);
-    border-radius: 15px;
-    box-shadow: 2px 3px 2px 3px rgba(0, 0, 0, 0.171);
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
