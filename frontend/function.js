@@ -154,3 +154,12 @@ async function getAllInfo(commune)
 		score_final: score_final
 	}
 }
+
+export {
+  getEnergyConsumption,
+  getWaterScore,
+  getConsoElec,
+  getINSEE,
+  calScore,
+  getAllInfo
+};
