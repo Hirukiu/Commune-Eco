@@ -14,7 +14,7 @@ async function getWaterScore(INSEE){
 	const resBac2 = await fetch(`https://hubeau.eaufrance.fr/api/v1/qualite_eau_potable/resultats_dis?code_commune=${INSEE}&date_min=2025-01-01&code_parametre=1447&conformite_limites_bact_prelevement=N&size=1`)
 	const resTot = await fetch(`https://hubeau.eaufrance.fr/api/v1/qualite_eau_potable/resultats_dis?code_commune=${INSEE}&date_min=2025-01-01&code_parametre=1449&size=1`)
 
-	if (!resBac1.ok && !resBac2.ok && !resTot.ok) {
+	if (!resBac1.ok || !resBac2.ok || !resTot.ok) {
 			console.warn(`Erreur API ADEME`);
 			return null;
 		}
@@ -28,10 +28,10 @@ async function getWaterScore(INSEE){
 	const countTotal = dataTot.count || 0;
 	
 	const totalFails = countEcoliFail + countEnteroFail;
-	const ratio = totalFails / countTotal;
+	const ratio = (countTotal - totalFails) / countTotal;
 
 	return {
-		score: Math.round((ratio * 1000) / 1000,),
+		score: Math.round(ratio * 1000) / 1000,
 		total_tests: countTotal,
 		total_incidents: totalFails,
 		detail: {
@@ -43,26 +43,29 @@ async function getWaterScore(INSEE){
 
 async function getConsoElec(INSEE){
 
-	const res = await fecth(`https://opendata.agenceore.fr/api/explore/v2.1/catalog/datasets/consommation-annuelle-d-electricite-et-gaz-par-commune/records?where=code_commune=${INSEE} AND annee=2024&select=filiere,conso_totale_mwh`)	
+	const res = await fetch(`https://opendata.agenceore.fr/api/explore/v2.1/catalog/datasets/consommation-annuelle-d-electricite-et-gaz-par-commune/records?where=code_commune=${INSEE} AND annee=2024&select=filiere,conso_totale_mwh,nombre_d_habitants`)	
 
 	if (!res.ok) {
 		console.warn(`Erreur API ADEME (${res.status})`);
 		return null;
 	}
-
+	let i = 0;
+	let usage = 0;
+	let gaz = 0;
 	const data = await res.json();
 	const result = data.results;
-		
-	let i;
-	let usage;
-	let gaz;
 
-	i = 0;
-	usage = 0;
-	gaz = 0;
-	while (i < result.len){
+	if (!result || result.length === 0) {
+		console.warn(`Pas de données ${INSEE}`);
+		return null;
+	}
+	
+	const population = result[i].nombre_d_habitants;
+	
+	
+	while (i < result.length){
 		let tmp;
-
+		
 		tmp = result[i].conso_totale_mwh
 
 		if (result[i].filiere != "Electricité")
@@ -71,12 +74,13 @@ async function getConsoElec(INSEE){
 			gaz = gaz + result[i].conso_totale_mwh;
 		}
 		usage = usage + tmp
+		i = i +1;
 	}
 
 	const ratio = gaz / usage;
 	
-	usage = (usage / i) * 0.059;
-	
+	usage = (usage * 0.059)/population;
+
 	return {
 		production_polution : usage,
 		utilisation_gaz : gaz,
@@ -93,44 +97,57 @@ async function getINSEE(commune){
 	}
 
 	const data = await res.json();
+
+	if (!data || data.length == 0) {
+		return null;
+	}
+
 	const first = data[0];
 
 	return {
 		name: first.nom,
-		INSEE: first.code
+		INSEE: first.code,
+		population : first.population
 	}
 }
 
-async function calScore(INSEE){
-	const polutions = getConsoElec(INSEE);
-	const water = getWaterScore(INSEE);
-	const energy = getEnergyConsumption(INSEE);
+function calScore(pollution, water, energy) {
+	const p = pollution ? pollution.production_polution : 0;
+	const w = water ? water.score : 0;
+	const e = energy || 0;
 
-	const score = polution.production_polution * water.score * energy
+	const score = p * w * e;
 	return score;
 }
 
 async function getAllInfo(commune)
 {
-	const INSEE = getINSEE(commune);
+	const ville = await getINSEE(commune);
 
+	if (!ville || !ville.INSEE) {
+	    console.warn(`commune non trouvée`);
+	    return null;
+	}
+	
+	const INSEE = ville.INSEE;
+	
 	if(!INSEE){
 		console.warn(`commune non trouvée`);
 		return null;
 	}
 
-	const polution = getConsoElec(INSEE);
-	const water = getWaterScore(INSEE);
-	const energy = getEnergyConsumption(INSEE);
+	const polution = await getConsoElec(INSEE);
+	const water = await getWaterScore(INSEE);
+	const energy = await getEnergyConsumption(INSEE);
 
-	if(!polutions || !water || !energy){
+	if(!polution || !water || !energy){
 		console.warn(`Commune non trouvée par une API`)
 	}
 
-	const score_final = calScore(INSEE);
+	const score_final = calScore(polution, water, energy);
 
 	return {
-		population: 1,
+		ville : ville,
 		moyenne_isolation: energy,
 		water_quality:water,
 		polution: polution,
