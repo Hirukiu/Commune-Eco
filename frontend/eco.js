@@ -140,10 +140,9 @@ async function getAllInfo(commune)
 		return null;
 	}
 
-	const polution = getConsoElec(INSEE);
-	const water = getWaterScore(INSEE);
-	const energy =  getEnergyConsumption(INSEE);
-console.log(energy)
+	const polution = await getConsoElec(INSEE);
+	const water = await getWaterScore(INSEE);
+	const energy = await getEnergyConsumption(INSEE);
 
     if (!polution) {
         console.warn("Donnée polution non trouvée par l'API");
@@ -183,11 +182,11 @@ console.log(energy)
 
 
 
-document.getElementById('btn1').addEventListener('click', () => {
+document.getElementById('btn1').addEventListener('click', async () => {
   const informations = document.getElementById('commune1').value;
-  const displayedData = getAllInfo(informations);
+  const displayedData = await getAllInfo(informations);
   const zone = document.getElementById('zone1');
-  zone.textContent = displayedData;
+  zone.textContent = displayedData.score_final;
 });
 
 
