@@ -127,12 +127,13 @@ async function getAllInfo(commune)
 		console.warn(`Commune non trouvée par une API`)
 	}
 
-	const calScore(INSEE);
+	const score_final = calScore(INSEE);
 
 	return {
 		population: 1,
 		moyenne_isolation: energy,
 		water_quality:water,
-		polution: polution
+		polution: polution,
+		score_final: score_final
 	}
 }
