@@ -1,6 +1,20 @@
 body{
     background: linear-gradient(90deg,rgba(42, 155, 115, 1) 0%, rgba(96, 199, 87, 1) 50%, rgba(181, 237, 83, 1) 100%);
 }
+.pedago{
+    display: block;
+    justify-self: right;
+    background-color: rgba(245, 222, 179, 0);
+    border: none;
+    transition: .4s;
+}
+svg{
+    height: 50px;
+    width: 50px;
+}
+.pedago:hover{
+    transform: scale(1.2);
+}
 h1{
     text-align: center;
     font-size: 80px;
