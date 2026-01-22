@@ -187,17 +187,15 @@ document.getElementById('btn1').addEventListener('click', async () => {
     const p4 = document.createElement('p');
     p4.textContent = displayedData.water.total_incidents;
     const p5 = document.createElement('p');
-    p5.textContent = displayedData.water.score;
-    const p6 = document.createElement('p');
     p6.textContent = displayedData.polution.production_polution;
-    const p7 = document.createElement('p');
+    const p6 = document.createElement('p');
     p7.textContent = displayedData.polution.utilisation_gaz;
-    const p8 = document.createElement('p');
+    const p7 = document.createElement('p');
     p8.textContent = displayedData.polution.taux_gaz;
-    const p9 = document.createElement('p');
+    const p8 = document.createElement('p');
     p9.textContent = displayedData.score_final;
     zone.textContent = "";
-    zone.append(p1, p2, p3, p4, p5, p6, p7, p8, p9);
+    zone.append(p1, p2, p3, p4, p5, p6, p7, p8);
 });
 
 document.getElementById('btn2').addEventListener('click', async () => {
@@ -213,17 +211,15 @@ document.getElementById('btn2').addEventListener('click', async () => {
     const p4 = document.createElement('p');
     p4.textContent = displayedData.water.total_incidents;
     const p5 = document.createElement('p');
-    p5.textContent = displayedData.water.score;
-    const p6 = document.createElement('p');
     p6.textContent = displayedData.polution.production_polution;
-    const p7 = document.createElement('p');
+    const p6 = document.createElement('p');
     p7.textContent = displayedData.polution.utilisation_gaz;
-    const p8 = document.createElement('p');
+    const p7 = document.createElement('p');
     p8.textContent = displayedData.polution.taux_gaz;
-    const p9 = document.createElement('p');
+    const p8 = document.createElement('p');
     p9.textContent = displayedData.score_final;
     zone.textContent = "";
-    zone.append(p1, p2, p3, p4, p5, p6, p7, p8, p9);
+    zone.append(p1, p2, p3, p4, p5, p6, p7, p8);
 });
 
 
