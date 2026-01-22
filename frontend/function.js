@@ -31,7 +31,7 @@ async function getWaterScore(INSEE){
 	const ratio = totalFails / countTotal;
 
 	return {
-		score: Math.round(ratio * 1000) / 1000,)
+		score: Math.round((ratio * 1000) / 1000,),
 		total_tests: countTotal,
 		total_incidents: totalFails,
 		detail: {
